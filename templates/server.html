@@ -1,0 +1,182 @@
+<html>
+<head>
+  <title>Question and Answer</title>
+        <link rel="shortcut icon" href="" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/server.css') }}">
+        <script src="{{ url_for('static', filename='js/jquery-3.2.1.slim.min.js') }}" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/popper.min.js') }}" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <link href="{{ url_for('static', filename='css/bootstrap-toggle.min.css') }}" rel="stylesheet">
+        <script src="{{ url_for('static', filename='js/bootstrap-toggle.min.js') }}"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+        <style media="screen">
+          #answer
+          {
+            position: fixed;
+            right:    50;
+            top:   50;
+          }
+        </style>
+
+</head>
+<body>
+  <div class="container">
+    <div class="">
+      <button type="button" id="answer" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#answermodel"><i class="fa fa-hand-point-right" aria-hidden="true"></i>Check Ans</button>
+    </div>
+    <div class="header" align="center">
+			<h1>Question and Answer</h1>
+      <div class="">
+        <input type="checkbox" id="startstop" data-toggle="toggle" data-on="<i class='fa fa-play'></i> Start" data-off="<i class='fa fa fa-stop'></i> Stop">
+        <!-- <input type="checkbox" data-toggle="toggle" data-on="Enabled" data-off="Disabled"> -->
+        <p id="demo"></p>
+      </div>
+		</div>
+    <br>
+    <div class="row">
+        <div class="card">
+          <div class="card-body">
+            <center><b class="card-title fs-30" align="center">{{data['question']}}</b></center>
+          </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-6">
+        <div class="card" style="background-color: #62d8dea6;">
+          <div class="card-body">
+            <h1 align="center">a)<span style="">{{data['a']}}</span></h1>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card" style="background-color: #47656585;">
+          <div class="card-body">
+            <h1 align="center">b)<span style="">{{data['b']}}</span></h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-6">
+        <div class="card" style="background-color: #a171bfa1;">
+          <div class="card-body">
+            <h1 align="center">c)<span style="">{{data['c']}}</span></h1>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card" style="background-color: #bd183896;">
+          <div class="card-body">
+            <h1 align="center">d)<span style="">{{data['d']}}</span></h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <form class="form-inline" action="/server" method="post" style="width:100%;">
+        <div class="col-12">
+          <input type="text" class="d-none" name="question_num" value="{{data['num']}}">
+          <button type="submit" class="btn btn-primary btn-lg btn-block">Next Question</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal fade" id="answermodel" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <table class="table table-hover" id="answertable">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Team Name</th>
+              <th scope="col">Answer</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+  function timeout()
+  {
+    var countDownDate = new Date().getTime();
+
+    // Update the count down every 1 second
+    var x = setInterval(function() {
+
+    // Get todays date and time
+    var now = new Date().getTime();
+
+    // Find the distance between now and the count down date
+    var distance = now - countDownDate;
+
+    // Time calculations for days, hours, minutes and seconds
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Display the result in the element with id="demo"
+    document.getElementById("demo").innerHTML = seconds + "s ";
+
+    // If the count down is finished, write some text
+    if (seconds > 10) {
+      clearInterval(x);
+      document.getElementById("demo").innerHTML = "EXPIRED";
+      $('#startstop').bootstrapToggle('off')
+    }
+  }, 500);
+  }
+  </script>
+  <script type="text/javascript">
+  $(document).ready(function(){
+    var divstatus = '{{data["divstatus"]}}';
+    console.log(divstatus);
+    if(divstatus == 'hide')
+      $('#startstop').bootstrapToggle('off')
+    else {
+      $('#startstop').bootstrapToggle('on')
+    }
+
+  });
+  </script>
+  <script src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+  <script type="text/javascript">
+    var jq = $.noConflict();
+    jq(document).ready(function(){
+      $("#startstop").change(function(){
+        status = $(this).prop('checked')
+        console.log(status);
+        if(status == "true")
+        {
+          timeout();
+        }
+        jq.get('/clientstatus',{'status':status})
+        .done(function(data){
+          console.log(data);
+        })
+      });
+    $("#answer").click(function(){
+      console.log('data');
+      jq.get('/get_answer')
+      .done(function(data){
+        console.log(data);
+        $.each(data,function(key,value){
+          console.log(key,value);
+          $("#answertable tbody").append('<tr>\
+            <th scope="row">'+(key+1)+'</th>\
+            <td>'+value['teamName']+'</td>\
+            <td>'+value['ans']+'</td>\
+          </tr>');
+        })
+      })
+    })
+});
+  </script>
+</body>
+</html>

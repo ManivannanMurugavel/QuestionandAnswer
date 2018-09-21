@@ -1,0 +1,116 @@
+<html>
+<head>
+  <title>Question and Answer</title>
+        <link rel="shortcut icon" href="" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
+        <script src="{{ url_for('static', filename='js/jquery-3.2.1.slim.min.js') }}" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/popper.min.js') }}" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<body>
+<div class="container">
+  <div class="header" align="center">
+    <h1>Question and Answer</h1>
+  </div>
+  <br>
+  <div class="loginmodal-container" id="teamdiv">
+    <h1>Enter your Team Name</h1>
+    <br>
+    <div>
+      <input type="text" id="team" name="team" placeholder="Team Name" style="text-align:center;">
+      <!-- <input type="password" name="pass" placeholder="Password"> -->
+      <button id="teambtn" type="button" class="btn btn-primary btn-lg btn-block">Enter</button>
+    </div>
+  </div>
+  <div class="answerdiv">
+    <div class="header" align="center">
+      <h3>Click your Answer</h3>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-6 answer">
+        <div class="card" style="background-color: #62d8dea6;">
+          <div class="card-body">
+            <h1 align="center">a)</h1>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 answer">
+        <div class="card" style="background-color: #47656585;">
+          <div class="card-body">
+            <h1 align="center">b)</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-6 answer">
+        <div class="card" style="background-color: #a171bfa1;">
+          <div class="card-body">
+            <h1 align="center">c)</h1>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 answer">
+        <div class="card" style="background-color: #bd183896;">
+          <div class="card-body">
+            <h1 align="center">d)</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script type="text/javascript">
+  var team_name = "";
+  $(".answerdiv").addClass("d-none");
+  var divstatus = '{{divstatus}}';
+  console.log(divstatus);
+  if(divstatus == 'hide')
+    $('.answerdiv').addClass("disabledbutton")
+  else {
+    $('.answerdiv').removeClass("disabledbutton")
+  }
+  var source = new EventSource("/divstatus");
+  source.onmessage = function(event) {
+    console.log(event);
+    divstatus = event.data;
+    if(divstatus == 'hide')
+      $('.answerdiv').addClass("disabledbutton")
+    else {
+      $('.answerdiv').removeClass("disabledbutton")
+    }
+  };
+</script>
+<script src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+<script type="text/javascript">
+    var jq = $.noConflict();
+
+  // Team Button Click
+  $("#teambtn").click(function(){
+    team_name = $("#team").val();
+    if(team_name != ""){
+      console.log(team_name);
+      jq.get('/create_team',{'teamName':team_name})
+      .done(function(data){
+        console.log(data);
+        $(".answerdiv").removeClass("d-none");
+        $("#teamdiv").addClass("d-none");
+      })
+    }
+  })
+  $(".card").click(function(){
+    ans = $(this).find('h1').text()[0]
+    console.log(ans);
+    $('.answerdiv').addClass("disabledbutton");
+    jq.get("/save_answer",{'teamName':team_name,'ans':ans})
+    .done(function(data){
+      console.log(data);
+    })
+  });
+</script>
+</html>

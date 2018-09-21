@@ -1,0 +1,150 @@
+<html>
+<head>
+  <title>Question and Answer</title>
+        <link rel="shortcut icon" href="" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/questions.css') }}">
+        <script src="{{ url_for('static', filename='js/jquery-3.2.1.slim.min.js') }}" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/popper.min.js') }}" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+
+</head>
+<body>
+  <div class="container">
+    <div class="header" align="center" style="height:100px;">
+      <h1>Question and Answer System</h1>
+    </div>
+  </div>
+  <div class="container text-white bg-dark">
+
+    <form method="POST" action="/uploadQuestion" class="needs-validation" novalidate style="padding:20px 55px;">
+      <h3 align="center"><span class = "label label-default">{{data["projectname"]}}</span></h3>
+      <div class="form-row">
+          <div class="col-12 mb-3">
+
+              <label for="validationCustomUsername">Enter your Question</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="inputGroupPrepend">{{data["question_number"]}}</span>
+                </div>
+                <input type="text" class="d-none" name="question_num" value="{{data['question_number']}}">
+                <input type="text" name="question_text" class="form-control form-control-lg" id="validationCustomUsername" placeholder="Enter your question" aria-describedby="inputGroupPrepend" required>
+                <div class="invalid-feedback">
+                  Please enter valis question.
+                </div>
+              </div>
+          </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-6 mb-3">
+          <label for="validationCustomUsername">Answer A</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroupPrepend">A</span>
+            </div>
+            <input type="text" name="answer_a" class="form-control" id="validationCustomUsername" placeholder="Answer" aria-describedby="inputGroupPrepend" required>
+            <div class="invalid-feedback">
+              Please enter valid answer.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="validationCustomUsername">Answer B</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroupPrepend">B</span>
+            </div>
+            <input type="text" name="answer_b" class="form-control" id="validationCustomUsername" placeholder="Answer" aria-describedby="inputGroupPrepend" required>
+            <div class="invalid-feedback">
+              Please enter valid answer.
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="form-row">
+        <div class="col-md-6 mb-3">
+          <label for="validationCustomUsername">Answer C</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroupPrepend">C</span>
+            </div>
+            <input type="text" name="answer_c" class="form-control" id="validationCustomUsername" placeholder="Answer" aria-describedby="inputGroupPrepend" required>
+            <div class="invalid-feedback">
+              Please enter valid answer.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="validationCustomUsername">Answer D</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroupPrepend">D</span>
+            </div>
+            <input type="text" name="answer_d" class="form-control" id="validationCustomUsername" placeholder="Answer" aria-describedby="inputGroupPrepend" required>
+            <div class="invalid-feedback">
+              Please enter valid answer.
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="form-row">
+        <div class="col-5">
+
+        </div>
+        <div class="col-2">
+          <div class="form-group">
+              <select class="custom-select" name="correct_answer" required>
+                <option value="">Select Answer</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+              </select>
+              <div class="invalid-feedback">Enter Valid Answer</div>
+          </div>
+        </div>
+        <div class="col-5">
+
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-5">
+
+        </div>
+        <div class="col-2" align="center">
+          <button class="btn btn-primary" type="submit">Submit form</button>
+        </div>
+        <div class="col-5">
+
+        </div>
+      </div>
+
+    </form>
+  </div>
+  <script>
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+  (function() {
+    'use strict';
+    window.addEventListener('load', function() {
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      var forms = document.getElementsByClassName('needs-validation');
+      // Loop over them and prevent submission
+      var validation = Array.prototype.filter.call(forms, function(form) {
+        form.addEventListener('submit', function(event) {
+          if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    }, false);
+  })();
+  </script>
+</body>
+</html>

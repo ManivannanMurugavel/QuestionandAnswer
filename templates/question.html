@@ -1,0 +1,105 @@
+<html>
+<head>
+  <title>Question and Answer</title>
+        <link rel="shortcut icon" href="" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/project.css') }}">
+        <script src="{{ url_for('static', filename='js/jquery-3.2.1.slim.min.js') }}" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/popper.min.js') }}" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+
+</head>
+<body>
+  <div class="container">
+    <div class="header" align="center">
+			<h1>Question and Answer</h1>
+		</div>
+    <div class="card text-white bg-info mb-3 d-none" id="questiondiv">
+        <div class="card-header">
+            <h5 align="center" class="card-title">Enter Your Question</h5>
+        </div>
+        <div class="card-body" style="text-align: center;">
+          <input class="form-control input-lg" id="questiontext" type="text" placeholder="Enter Your Question...">
+          <br>
+          <br>
+          <button id="questionbtn" type="button" class="btn btn-secondary btn-lg">My Question</button>
+        </div>
+    </div>
+
+    <div class="loginmodal-container" id="logindiv">
+      <h1>Login to Your Account</h1><br>
+      <div>
+      <input type="text" id="user" name="user" placeholder="Username" style="text-align:center;">
+      <!-- <input type="password" name="pass" placeholder="Password"> -->
+      <button id="loginbtn" type="button" class="btn btn-primary btn-lg btn-block">Enter</button>
+    </div>
+    </div>
+
+  </div>
+  <button type="button" id="alertmodelclick" class="btn btn-primary d-none" data-toggle="modal" data-target="#alertModel" data-whatever="@mdo">Open modal for @mdo</button>
+  <div class="modal fade" id="alertModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="alerttitle"></h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h4 id="alertmessage"></h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <script type="text/javascript">
+  var username;
+    $(document).ready(function(){
+      body_height = $('body').height()
+      $("#logindiv").css('margin-top',body_height/6);
+      $("#loginbtn").click(function(){
+        username = $("#user").val();
+        console.log(username);
+        if(username == "")
+        {
+          $("#alerttitle").text("Login");
+          $("#alertmessage").text("Please enter your name")
+          $('#alertmodelclick').click();
+          return;
+        }
+        $("#logindiv").addClass("d-none");
+        $("#questiondiv").removeClass("d-none");
+      })
+      $("#questionbtn").click(function(){
+        question_text = $("#questiontext").val();
+        if(question_text == "")
+        {
+          $("#alerttitle").text("Question");
+          $("#alertmessage").text("Your Question is Empty")
+          $('#alertmodelclick').click();
+          return;
+        }
+        $.get("/put_question",{'name':username,'question':question_text},function(data){
+          if(data == "success")
+          {
+            $("#alerttitle").text("Question");
+            $("#alertmessage").text("Success")
+            $('#alertmodelclick').click();
+          }
+          console.log("success");
+        })
+      })
+    })
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+.card
+{
+  width: 100%;
+  text-align: center;
+}
+.fs-30
+{
+  font-size: 30px;
+}
+.toggle-on, .toggle-on:hover
+{
+  background-color: green;
+}
+.toggle-off
+{
+  background-color: red;
+}
