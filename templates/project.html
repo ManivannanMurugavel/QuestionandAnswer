@@ -26,7 +26,7 @@
       <div class="col-12 projects">
         {% for project in projects %}
         <div class="col-3" style="float:left;">
-          <div class="card bg-light mb-3" style="text-align:center;">
+          <div class="card mb-3" style="text-align:center;border-width:4px;">
             <div class="card-body" style="padding:40px;">
               <!-- <h5 class="card-title">Special title treatment</h5> -->
               <h3 class="card-title"><b>{{project["project"]}}</b></h3>
@@ -71,8 +71,8 @@
 <script src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
 <script type="text/javascript">
   var jq = $.noConflict();
-  cookie_name = Cookies.get("cookie_name")
-  if (typeof(cookie_name) == "undefined")
+  username = Cookies.get("username")
+  if (typeof(username) == "undefined")
   {
     console.log("Wrone cookie");
     $("body").empty()

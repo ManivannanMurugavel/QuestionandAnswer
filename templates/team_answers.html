@@ -1,0 +1,126 @@
+<html>
+<head>
+  <title>Question and Answer</title>
+        <link rel="shortcut icon" href="" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="{{ url_for('static', filename='js/jquery-3.2.1.slim.min.js') }}" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/popper.min.js') }}" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+        <script src="{{ url_for('static', filename='js/highcharts.js') }}"></script>
+        <!-- <script src="https://code.highcharts.com/modules/data.js"></script> -->
+        <!-- <script src="https://code.highcharts.com/modules/drilldown.js"></script> -->
+        <style media="screen">
+          .card-body{
+            text-align: center;
+          }
+          .row{
+            box-shadow: 0px 0px 20px -3px rgba(0, 0, 0, 0.50);
+          }
+        </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header" align="center">
+      <h1>Question and Answer</h1>
+    </div>
+    <br>
+    <div align="center" class="">
+      <h3><b>Teams Answers</b></h3>
+    </div>
+    <br>
+    <div class="col-12">
+      {% for data in datas %}
+      <div class="row" style="padding: 10px 0px;">
+        <div class="col-3">
+          <div class="card" style="background-color:red;">
+            <div class="card-body">
+              {{data["question_num"]}}
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="card" style="text-align:center;">
+            <ul class="list-group list-group-flush">
+              {% for teamAnswer in data["teamAnswers"] %}
+              <li class="list-group-item" style="background-color: #2bb2da;">{{teamAnswer["teamName"]}} : {{teamAnswer["ans"]}} : {{teamAnswer["seconds"]}}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="card" style="background-color:#09c109;">
+            <div class="card-body">
+              {{data["correctAnswer"]}}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<script type="text/javascript">
+data = []
+{% for dct in team_dict %}
+console.log('{{dct}},{{team_dict[dct]}}');
+item = {}
+item['name'] = '{{dct}}';
+item['y'] = {{team_dict[dct]}};
+data.push(item)
+{% endfor %}
+console.log(data);
+function drawBarChart(data){
+  Highcharts.chart('container', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Question and Answer'
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        type: 'category'
+    },
+    yAxis: {
+        title: {
+            text: 'Answer Count'
+        }
+
+    },
+    legend: {
+        enabled: false
+    },
+    plotOptions: {
+        series: {
+            borderWidth: 0,
+            dataLabels: {
+                enabled: true,
+                format: '{point.y:.1f}'
+            }
+        }
+    },
+
+    tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}</b> of total<br/>'
+    },
+
+    "series": [
+        {
+            "name": "Answers",
+            "data": data
+        }
+    ],
+
+  });
+
+}
+drawBarChart(data);
+</script>
+</body>
+</html>

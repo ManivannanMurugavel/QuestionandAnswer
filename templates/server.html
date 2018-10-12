@@ -46,14 +46,14 @@
     <br>
     <div class="row">
       <div class="col-6">
-        <div class="card" style="background-color: #62d8dea6;">
+        <div class="card" id="a" style="background-color: #62d8dea6;">
           <div class="card-body">
             <h1 align="center">a)<span style="">{{data['a']}}</span></h1>
           </div>
         </div>
       </div>
       <div class="col-6">
-        <div class="card" style="background-color: #47656585;">
+        <div class="card" id="b" style="background-color: #47656585;">
           <div class="card-body">
             <h1 align="center">b)<span style="">{{data['b']}}</span></h1>
           </div>
@@ -63,18 +63,19 @@
     <br>
     <div class="row">
       <div class="col-6">
-        <div class="card" style="background-color: #a171bfa1;">
+        <div class="card" id="c" style="background-color: #a171bfa1;">
           <div class="card-body">
             <h1 align="center">c)<span style="">{{data['c']}}</span></h1>
           </div>
         </div>
       </div>
       <div class="col-6">
-        <div class="card" style="background-color: #bd183896;">
+        <div class="card" id="d" style="background-color: #bd183896;">
           <div class="card-body">
             <h1 align="center">d)<span style="">{{data['d']}}</span></h1>
           </div>
         </div>
+        <span id="ans" class="d-none">{{data['ans']}}</span>
       </div>
     </div>
     <br>
@@ -96,6 +97,7 @@
               <th scope="col">#</th>
               <th scope="col">Team Name</th>
               <th scope="col">Answer</th>
+              <th scope="col">Seconds</th>
             </tr>
           </thead>
           <tbody>
@@ -147,6 +149,7 @@
   </script>
   <script src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
   <script type="text/javascript">
+  // console.log(a);
     var jq = $.noConflict();
     jq(document).ready(function(){
       $("#startstop").change(function(){
@@ -162,16 +165,20 @@
         })
       });
     $("#answer").click(function(){
+      ans = $("#ans").text().trim();
+      $("#"+ans).css('background-color','green');
       console.log('data');
-      jq.get('/get_answer')
+      jq.get('/get_answer',{'ans':ans})
       .done(function(data){
         console.log(data);
+        $("#answertable tbody").empty()
         $.each(data,function(key,value){
           console.log(key,value);
           $("#answertable tbody").append('<tr>\
             <th scope="row">'+(key+1)+'</th>\
             <td>'+value['teamName']+'</td>\
             <td>'+value['ans']+'</td>\
+            <td>'+value['seconds']+'</td>\
           </tr>');
         })
       })

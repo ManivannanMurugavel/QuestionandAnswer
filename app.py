@@ -15,6 +15,8 @@ username = ""
 addUser = True
 currQuesNum = 0;
 teamAnswer = []
+authCredential = 'None'
+startQuesTime = time.time()
 
 app = Flask(__name__)
 @app.route('/')
@@ -59,18 +61,24 @@ def uploadQuestion():
 
 @app.route('/admin')
 def admin():
-	return render_template('admin.html')
+	print('Admin')
+	print(request.cookies)
+	return render_template('login.html')
 
 @app.route('/login')
 def login():
 	global auth
 	global username
+	global authCredential
+	print(request.cookies)
 	username = request.args['username']
 	password = request.args['password']
 	print(username,password)
 	conn.reconnect(noreply_wait=False)
 	datas = r.db('user').table("user_details").filter({'username':username,'password':password}).run(conn)
 	conn.close()
+	username = username.split('@')[0]
+	authCredential = '{}{}'.format(username[:3],password[-3:])
 	status = len(list(datas))
 	if(status > 0):
 		auth = True
@@ -80,7 +88,11 @@ def login():
 
 @app.route('/project')
 def project():
+	print(authCredential)
 	if not auth:
+		return render_template('try_again.html')
+	print(request.cookies.get('username'))
+	if(request.cookies.get('username') != authCredential):
 		return render_template('try_again.html')
 	projects = []
 	conn.reconnect(noreply_wait=False)
@@ -120,6 +132,7 @@ def select_project():
 	conn.reconnect(noreply_wait=False)
 	dbs = r.db_list().run(conn)
 	r.db(db).table('team_details').delete().run(conn)
+	r.db(db).table('team_answer').delete().run(conn)
 	conn.close()
 	if db in list(dbs):
 		return "success"
@@ -128,6 +141,8 @@ def select_project():
 @app.route('/project_questions')
 def project_questions():
 	if db == "None":
+		return render_template('try_again.html')
+	if(request.cookies.get('username') != authCredential):
 		return render_template('try_again.html')
 	conn.reconnect(noreply_wait=False)
 	questions = r.db(db).table('questions').order_by('num').run(conn)
@@ -174,6 +189,8 @@ def server():
 	print(auth)
 	if not auth:
 		return render_template('try_again.html')
+	if(request.cookies.get('username') != authCredential):
+		return render_template('try_again.html')
     # r.connect( "localhost", 28015).repl()
 	num = 1
 	teamAnswer = []
@@ -184,6 +201,9 @@ def server():
 		num += 1
 	currQuesNum = num
 	conn.reconnect(noreply_wait=False)
+	cnt = r.db(db).table("questions").count().run(conn)
+	if(currQuesNum > cnt):
+		return render_template('completed.html')
 	datas = r.db(db).table("questions").filter({'num':str(num)}).run(conn)
 	divstatus = list(r.db(db).table('clientpagestatus').run(conn))[0]['pageStatus']
 	conn.close()
@@ -198,23 +218,49 @@ def save_answer():
 	print(request.args)
 	teamName = request.args['teamName']
 	ans = request.args['ans']
-	teamAnswer.append({'teamName':teamName,'ans':ans})
+	seconds = time.time()-startQuesTime
+	teamAnswer.append({'teamName':teamName,'ans':ans,'seconds':round(seconds,3)})
 	print(currQuesNum)
 	return "success"
 
 @app.route('/get_answer')
 def get_answer():
 	# teamAnswer = [{'ans': 'd', 'teamName': 'Jarvis'}]
+	ans = request.args['ans']
 	print(teamAnswer)
+	conn.reconnect(noreply_wait=False)
+	r.db(db).table("team_answer").insert({'question_num':currQuesNum,'teamAnswers':teamAnswer,'correctAnswer':ans}).run(conn)
+	conn.close()
 	return jsonify(teamAnswer)
+
+@app.route('/team_answers')
+def team_answers():
+	conn.reconnect(noreply_wait=False)
+	team_dict = {}
+	datas = r.db(db).table("team_answer").order_by('question_num').run(conn)
+	for data in list(datas):
+		ans = data['correctAnswer']
+		for teamAnswer in data['teamAnswers']:
+			if teamAnswer['teamName'] not in team_dict:
+				team_dict[teamAnswer['teamName']] = 0
+			if(ans == teamAnswer['ans']):
+				team_dict[teamAnswer['teamName']] += 1
+	print(team_dict)
+	# print sorted(team_dict, key = lambda i: (i['age'], i['name']))
+	conn.close()
+	datas = list(datas)
+	print(datas)
+	return render_template('team_answers.html',datas=datas,team_dict=team_dict)
 
 @app.route('/clientstatus')
 def clientstatus():
+	global startQuesTime
 	status = request.args['status']
 	print(status)
 	conn.reconnect(noreply_wait=False)
 	if(status == "true"):
 		print("true")
+		startQuesTime = time.time()
 		r.db(db).table('clientpagestatus').update({"pageStatus":"show"}).run(conn)
 	else:
 		print("false")

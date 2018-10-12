@@ -145,10 +145,10 @@
 }
 .projects .card:hover{
   cursor: pointer;
-  color: white;
-  background: #DE6262;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to bottom, #FFB88C, #DE6262);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to bottom, #2193b0, #6dd5ed);
+  /* color: white; */
+  /* background: #DE6262;  /* fallback for old browsers */ */
+  /* background: -webkit-linear-gradient(to bottom, #FFB88C, #DE6262);  /* Chrome 10-25, Safari 5.1-6 */ */
+  /* background: linear-gradient(to bottom, #2193b0, #6dd5ed); */
 }
 .answers .col-3,.teams .col-3{
   float: left;

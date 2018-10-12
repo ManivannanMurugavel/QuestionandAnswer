@@ -1,0 +1,93 @@
+<html>
+	<title>Question and Answer</title>
+	<!-- Meta tag Keywords -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css" media="all">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+	<script src="{{ url_for('static', filename='js/js.cookie.js') }}"></script>
+</head>
+
+<body>
+	<!-- title -->
+	<h1>
+		<span>Question</span>
+		and
+		<span>Answer</span>
+	</h1>
+	<!-- //title -->
+	<!---728x90--->
+
+	<!-- content -->
+	<div class="sub-main-w3">
+		<form id="demo" novalidate="true" action="/admin" method="post">
+			<h2>Login Your Account</h2>
+			<div class="form-group">
+				<input type="email" class="form-control textbox validifySuccess" name="email" placeholder="E-mail" required="">
+			</div>
+			<div class="form-group">
+				<input type="password" class="form-control textbox validifySuccess" name="password" placeholder="Password" required="">
+			</div>
+			<div class="form-group-2">
+				<button class="btn btn-default btn-osx btn-lg" type="submit">
+					<i class="fa fa-hand-o-right"></i>
+				</button>
+			</div>
+			<div class="alert alert-success hidden" role="alert">You Have Successfully Logged In</div>
+		</form>
+		<!-- //switch -->
+	</div>
+	<!-- //content -->
+	<!---728x90--->
+
+	<!-- copyright -->
+	<!-- //copyright -->
+	<!---728x90--->
+
+
+	<!-- Jquery -->
+  <script src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+	<!-- //Jquery -->
+	<!-- validify plugin -->
+  <script src="{{ url_for('static', filename='js/validify.js') }}"></script>
+	<script>
+		$("#demo").validify({
+			onSubmit: function (e, $this) {
+				$this.find('.alert').removeClass('hidden')
+			},
+			onFormSuccess: function (form) {
+				console.log("Form is valid now!")
+			},
+			onFormFail: function (form) {
+				console.log("Form is not valid :(")
+			}
+		});
+		$("#demo").validify({
+			errorStyle: "validifyError",
+			successStyle: "validifySuccess",
+			emailFieldName: "email",
+			emailCheck: true,
+			requiredAttr: "required",
+		});
+    $("button").click(function(){
+        console.log("k");
+				username = $("[type=email]").val()
+				password = $("[type=password]").val()
+        $.get('/login',{'username':username,'password':password})
+        .done(function(data){
+          console.log(data);
+          if(data == "error")
+            $(".alert").removeClass("d-none");
+          else {
+            cookie_name = username.substring(0,3)+password.substring(password.length-3,password.length)
+            Cookies.set('username',cookie_name)
+            location.href = "/project"
+          }
+        })
+    });
+	</script>
+	<!-- //validify plugin -->
+
+
+
+</body>
+</html>
